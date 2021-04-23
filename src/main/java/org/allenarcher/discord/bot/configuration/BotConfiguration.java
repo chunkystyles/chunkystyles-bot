@@ -1,16 +1,19 @@
-package org.allenarcher.discord.bot;
+package org.allenarcher.discord.bot.configuration;
 
 import discord4j.core.DiscordClientBuilder;
 import discord4j.core.GatewayDiscordClient;
 import discord4j.core.event.domain.Event;
+import org.allenarcher.discord.bot.event.EventListener;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 import java.util.List;
 import java.util.Objects;
 
 @Configuration
+@PropertySource("classpath:token")
 public class BotConfiguration {
     @Value("${token}")
     private String token;

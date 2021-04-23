@@ -1,4 +1,4 @@
-package org.allenarcher.discord.bot;
+package org.allenarcher.discord.bot.event;
 
 import discord4j.core.object.entity.Message;
 import org.allenarcher.discord.bot.command.CommandManager;
@@ -31,11 +31,10 @@ public class MessageListener {
 
     private static Mono<Void> processCommand(Message message){
         return Mono.just(message)
-                .flatMap(message1 -> {
-                    String messageContent = message1.getContent().replaceFirst(commandPrefix, "");
-                    String commandAlias = messageContent.split(" ")[0];
-                    return CommandManager.getInstance().getCommand(commandAlias).processCommand(message);
-                })
-                .then();
+                .flatMap(message1 -> CommandManager.getInstance()
+                        .getCommand(message1.getContent().replaceFirst(commandPrefix, "")
+                        .split(" ")[0])
+                        .processCommand(message)
+                ).then();
     }
 }

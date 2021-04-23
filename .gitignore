@@ -27,3 +27,6 @@ hs_err_pid*
 *.iws
 *.ipr
 .idea/
+
+# Discord
+token

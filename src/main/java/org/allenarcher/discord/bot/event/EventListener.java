@@ -1,4 +1,4 @@
-package org.allenarcher.discord.bot;
+package org.allenarcher.discord.bot.event;
 
 import discord4j.core.event.domain.Event;
 import org.slf4j.Logger;
