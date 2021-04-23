@@ -4,14 +4,34 @@ import discord4j.core.object.entity.Message;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Mono;
 
-public abstract class MessageListener {
+public class MessageListener {
 
-    public Mono<Void> processCommand(Message eventMessage) {
+    private static final String commandPrefix = "!";
+
+    public static Mono<Void> processMessageEvent(Message eventMessage) {
         return Mono.just(eventMessage)
                 .filter(message -> message.getAuthor().map(user -> !user.isBot()).orElse(false))
-                .filter(message -> message.getContent().equalsIgnoreCase("!todo"))
+                .flatMap(message -> {
+                    if (StringUtils.startsWithIgnoreCase(message.getContent(), commandPrefix)){
+                        return processCommand(message);
+                    } else {
+                        return processMessage(message);
+                    }
+                })
+                .then();
+    }
+
+    private static Mono<Void> processMessage(Message eventMessage){
+        return Mono.just(eventMessage)
                 .flatMap(Message::getChannel)
-                .flatMap(channel -> channel.createMessage("Things to do today:\n - write a bot\n - eat lunch\n - play a game"))
+                .flatMap((messageChannel -> messageChannel.createMessage("You posted a message, not a command.")))
+                .then();
+    }
+
+    private static Mono<Void> processCommand(Message eventMessage){
+        return Mono.just(eventMessage)
+                .flatMap(Message::getChannel)
+                .flatMap((messageChannel -> messageChannel.createMessage("You used the command '" + eventMessage.getContent() + "'")))
                 .then();
     }
 }
