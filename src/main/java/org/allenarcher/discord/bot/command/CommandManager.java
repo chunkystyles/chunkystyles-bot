@@ -17,7 +17,7 @@ public class CommandManager {
     private CommandManager() {
         this.commandsMap = CommandManager.initialize(
                 new HelpCommand(),
-                new UnrecognizedCommand()
+                new RankCommand()
         );
         this.unrecognizedCommand = new UnrecognizedCommand();
     }
