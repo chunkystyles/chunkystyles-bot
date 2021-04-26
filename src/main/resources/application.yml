@@ -1,6 +1,8 @@
 commands:
+  unrecognized:
+    text: Command '%s' is not recognized.
   help:
-    text: "This is some help text!"
+    text: This is some help text!
     aliases: help, h
   rank:
     aliases: rank, level, experience, xp
