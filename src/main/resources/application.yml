@@ -1,3 +1,15 @@
+spring:
+  jpa:
+    database-platform: org.allenarcher.discord.bot.persistence.SQLDialect
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:sqlite:sqlitesample.db
+    driver-class-name: org.sqlite.JDBC
+    initialization-mode: always
+    username: admin
+    password: admin
+
 commands:
   prefix: '!'
   unrecognized:

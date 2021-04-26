@@ -2,7 +2,8 @@ package org.allenarcher.discord.bot.event;
 
 import discord4j.core.object.entity.Message;
 import org.allenarcher.discord.bot.command.CommandManager;
-import org.allenarcher.discord.bot.level.LevelManager;
+import org.allenarcher.discord.bot.persistence.User;
+import org.allenarcher.discord.bot.persistence.UserRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -12,14 +13,14 @@ import reactor.core.publisher.Mono;
 public class MessageListener {
     private final String commandPrefix;
     private final CommandManager commandManager;
-    private final LevelManager levelManager;
+    private final UserRepository userRepository;
 
     public MessageListener(@Value("${commands.prefix}") String commandPrefix,
                            CommandManager commandManager,
-                           LevelManager levelManager) {
+                           UserRepository userRepository) {
         this.commandPrefix = commandPrefix;
         this.commandManager = commandManager;
-        this.levelManager = levelManager;
+        this.userRepository = userRepository;
     }
 
     public Mono<Void> processMessageEvent(Message message) {
@@ -38,7 +39,18 @@ public class MessageListener {
     private Mono<Void> processMessage(Message message){
         return Mono.just(message)
                 .flatMap(message1 -> {
-                    levelManager.addExperience(message1.getAuthor().get().getId().asLong());
+                    long id = message1.getAuthor().get().getId().asLong();
+                    User user = userRepository.selectUser(id);
+                    if (user != null) {
+                        user.incrementPostsAndExperience();
+                        userRepository.updateUser(user);
+                    } else  {
+                        user = new User();
+                        user.setId(id);
+                        user.setExperience(1L);
+                        user.setPosts(1L);
+                        userRepository.insertUser(user);
+                    }
                     return Mono.empty();
                 })
                 .then();
