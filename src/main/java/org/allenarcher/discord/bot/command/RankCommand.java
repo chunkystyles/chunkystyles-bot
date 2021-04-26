@@ -11,9 +11,11 @@ import java.util.List;
 @Component
 public class RankCommand implements Command {
     private final List<String> aliases;
+    private final LevelManager levelManager;
 
-    public RankCommand(@Value("${commands.rank.aliases}") List<String> aliases) {
+    public RankCommand(@Value("${commands.rank.aliases}") List<String> aliases, LevelManager levelManager) {
         this.aliases = aliases;
+        this.levelManager = levelManager;
     }
 
     @Override
@@ -21,7 +23,7 @@ public class RankCommand implements Command {
         return Mono.just(message)
                 .flatMap(Message::getChannel)
                 .flatMap(channel -> {
-                    Integer experience = LevelManager.getInstance().getExperience(message.getAuthor().get().getId().asLong());
+                    Integer experience = levelManager.getExperience(message.getAuthor().get().getId().asLong());
                     int level = calculateLevel(experience);
                     return channel.createMessage("Your xp = " + experience + "\nYour level = " + level);
                 })

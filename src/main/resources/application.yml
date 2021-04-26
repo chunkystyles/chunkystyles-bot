@@ -1,4 +1,5 @@
 commands:
+  prefix: '!'
   unrecognized:
     text: Command '%s' is not recognized.
   help:

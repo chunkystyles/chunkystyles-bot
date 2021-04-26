@@ -1,20 +1,17 @@
 package org.allenarcher.discord.bot.level;
 
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+@Component
 public class LevelManager {
-    private static LevelManager instance;
-
-    static {
-        LevelManager.instance = new LevelManager();
-    }
 
     private final Map<Long, Integer> experienceMap;
 
-    private LevelManager(){
+    public LevelManager() {
         this.experienceMap = new ConcurrentHashMap<>();
     }
 
@@ -25,9 +22,5 @@ public class LevelManager {
     public Mono<Void> addExperience(Long key){
         experienceMap.put(key, experienceMap.getOrDefault(key, 0) + 1);
         return Mono.empty();
-    }
-
-    public static LevelManager getInstance(){
-        return LevelManager.instance;
     }
 }
