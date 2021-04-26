@@ -1,17 +1,23 @@
 package org.allenarcher.discord.bot.event;
 
-import discord4j.core.object.entity.Member;
 import discord4j.core.object.entity.Message;
 import org.allenarcher.discord.bot.command.CommandManager;
 import org.allenarcher.discord.bot.level.LevelManager;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import reactor.core.publisher.Mono;
 
+@Component
 public class MessageListener {
 
     private static final String commandPrefix = "!";
+    private final CommandManager commandManager;
 
-    public static Mono<Void> processMessageEvent(Message message) {
+    public MessageListener(CommandManager commandManager) {
+        this.commandManager = commandManager;
+    }
+
+    public Mono<Void> processMessageEvent(Message message) {
         return Mono.just(message)
                 .filter(message1 -> message1.getAuthor().map(user -> !user.isBot()).orElse(false))
                 .flatMap(message1 -> {
@@ -33,9 +39,9 @@ public class MessageListener {
                 .then();
     }
 
-    private static Mono<Void> processCommand(Message message){
+    private Mono<Void> processCommand(Message message){
         return Mono.just(message)
-                .flatMap(message1 -> CommandManager.getInstance()
+                .flatMap(message1 -> commandManager
                         .getCommand(parseCommandAlias(message1.getContent()))
                         .processCommand(message)
                 ).then();

@@ -6,6 +6,11 @@ import reactor.core.publisher.Mono;
 
 @Service
 public class MessageCreateListener implements EventListener<MessageCreateEvent> {
+    private final MessageListener messageListener;
+
+    public MessageCreateListener(MessageListener messageListener) {
+        this.messageListener = messageListener;
+    }
 
     @Override
     public Class<MessageCreateEvent> getEventType() {
@@ -14,6 +19,6 @@ public class MessageCreateListener implements EventListener<MessageCreateEvent> 
 
     @Override
     public Mono<Void> execute(MessageCreateEvent event) {
-        return MessageListener.processMessageEvent(event.getMessage());
+        return messageListener.processMessageEvent(event.getMessage());
     }
 }

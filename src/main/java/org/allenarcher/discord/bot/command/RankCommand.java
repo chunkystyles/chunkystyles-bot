@@ -2,11 +2,20 @@ package org.allenarcher.discord.bot.command;
 
 import discord4j.core.object.entity.Message;
 import org.allenarcher.discord.bot.level.LevelManager;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+@Component
 public class RankCommand implements Command {
+    private final List<String> aliases;
+
+    public RankCommand(@Value("${commands.rank.aliases}") List<String> aliases) {
+        this.aliases = aliases;
+    }
+
     @Override
     public Mono<Void> processCommand(Message message) {
         return Mono.just(message)
@@ -21,7 +30,7 @@ public class RankCommand implements Command {
 
     @Override
     public List<String> getAliases() {
-        return List.of("rank", "level");
+        return aliases;
     }
 
     private static int calculateLevel(int experience){

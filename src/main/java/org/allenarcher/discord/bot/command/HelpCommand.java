@@ -1,17 +1,23 @@
 package org.allenarcher.discord.bot.command;
 
 import discord4j.core.object.entity.Message;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
+@Component
+@ConfigurationProperties(prefix = "application")
 public class HelpCommand implements Command {
     private final String helpCommandText;
     private final List<String> aliases;
 
-    public HelpCommand(){
-        helpCommandText = "Some help text.";
-        aliases = List.of("help", "h");
+    public HelpCommand(@Value("${commands.help.text}") String helpCommandText,
+                       @Value("${commands.help.aliases}") List<String> aliases) {
+        this.helpCommandText = helpCommandText;
+        this.aliases = aliases;
     }
 
     @Override

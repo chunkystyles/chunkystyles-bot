@@ -1,0 +1,6 @@
+commands:
+  help:
+    text: "This is some help text!"
+    aliases: help, h
+  rank:
+    aliases: rank, level, experience, xp
